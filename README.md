@@ -220,7 +220,7 @@ select * from t1
 -- note that it is bad practice to use * if we don't need all columns (increased traffic between database server and app -> slows down retrieval of results)
 ```
 
-**Challenge**: we want to send out a promotional email to our existing customers. Grab the first and last names of every customer and their email address.
+
 
 ## 3.2. DISTINCT Keyword
 
@@ -233,8 +233,6 @@ select distinct c from t1
 -- we can add parenthesis for clarity. When adding more calls together, the parenthesis will be necessary
 select distinct(c) from t1
 ```
-
-**Challenge**: retrieve the distinct rating types out films could have in our database.
 
 ## 3.3. COUNT Function
 
@@ -285,24 +283,21 @@ where rental_rate >= 4 and replacement_cost >= 19.99 and rating = 'R'
 -- return the columns of the customer table
 -- select * from customer where 1=0
 
-select email, first_name, last_name from customer
-where first_name = 'Nancy' and last_name = 'Thomas'
+
 ```
 
 **Challenge**: what is the movie Outlaw Hanky about? Solution:
 
 ```sql
 -- select * from film where 1=0
-select description from film
-where title = 'Outlaw Hanky'
+
 ```
 
 **Challenge**: get the phone number for the customer who lives at 259 Ipoh Drive.
 
 ```sql
 -- select * from address where 1=0
-select phone from "address"
-where address='259 Ipoh Drive'
+
 ```
 
 ## 3.5. ORDER BY Clause
@@ -351,10 +346,7 @@ limit 5
 -- return columns names / layout of the table
 -- select * from payment limit 1
 
-select distinct(customer_id), payment_date from payment
--- where
-order by payment_date asc
-limit 10
+
 -- assumption: we want to reward 10 different paying cusotmers
 ```
 
@@ -364,17 +356,13 @@ limit 10
 -- see layout of the table film
 -- select * from film limit 1
 
-select title, "length" from film
--- where
-order by "length" asc
-limit 5
+
 ```
 
 **Challenge**: if a customer can watch a movie that is 50 minutes or less in run time, how many options does the customer have?
 
 ```sql
-select count(title) from film
-where "length" <= 50
+
 ```
 
 ## 3.7. BETWEEN Operator
@@ -483,45 +471,38 @@ order by first_name
 How many payment transaction were greater than $5.00?
 
 ```sql
-select count(amount) from payment
-where amount > 5
+
 ```
 
 How many actors have a first name that starts with the letter P?
 
 ```sql
-select count(distinct(actor_id))
-from actor
-where first_name ilike 'p%'
+
 ```
 
 How many unique districts are our customers from?
 
 ```sql
-select count(distinct(district)) from address
 -- where
 ```
 
 Retrieve the list of names for those distinct districts from the previous question.
 
 ```sql
-select distinct(district) from address
 -- where
 ```
 
 How many films have a rating of R and a replacement cost between $5 and $15? ([*](https://xzilla.net/blog/2007/Sep/PostgreSQL-8.3-Features-Enum-Datatype.html))
 
 ```sql
-select count(title) from film
-where rating = 'R' and replacement_cost between 5 and 15
+
 -- note that rating is mpaa_rating data type
 ```
 
 How many films have the word Truman somewhere in the title?
 
 ```sql
-select count(title) from film
-where title ilike '%truman%'
+
 ```
 
 # 5. GROUP BY Statements & Aggregate Functions
@@ -816,38 +797,26 @@ order by sum(amount) desc
 **Challenge**: We have two staff members, with Staff IDs 1 and 2. We want to give a bonus to the staff member that handled the most payments. (Most in terms of number of payments processed, not total dollar amount). How many payments did each staff member handle and who gets the bonus?
 
 ```sql
-select staff_id, count(payment_id) from payment
-group by staff_id
+
 ```
 
 Alternative solution:
 
 ```sql
-select staff_id, count(distinct(payment_id))
-from payment
-where staff_id in (1,2)
-group by staff_id
-order by count(distinct(payment_id)) desc
+
 -- limit 5
 ```
 
 **Challenge**: Corporate HQ is conducting a study on the relationship between replacement cost and a movie MPAA rating. What is the average replacement cost per MPAA rating?
 
 ```sql
-select rating, round(avg(replacement_cost),2)
-from film
-group by rating
-order by avg(replacement_cost) desc
+
 ```
 
 **Challenge**: We are running a promotion to reward our top 5 customers with coupons. What are the customer ids of the top 5 customers by total spend?
 
 ```sql
-select customer_id, round(sum(amount),2)
-from payment
-group by customer_id
-order by sum(amount) desc
-limit 5
+
 ```
 
 Alternative: 
@@ -923,28 +892,13 @@ having count(customer_id) >= 300
 **Challenge**: We are launching a platinum service for our most loyal customers. We will assign platinum status to customers that have had 40 or more transaction payments. What customer_ids are eligible for platinum status?
 
 ```sql
-select customer_id, count(*)
-from payment
-group by customer_id
-having count(*) >= 40
+
 ```
 
 **Challenge**: What are the customer ids of customers who have spent more than $100 in payment transactions with our staff_id member 2?
 
 ```sql
-select
-    customer_id,
-    sum(amount)
-from
-    payment
-where
-    staff_id = 2
-group by
-    customer_id
-having
-    sum(amount) > 100
-order by
-    sum(amount) desc
+
 ```
 
 # 6. Assessment Test 1
@@ -952,42 +906,25 @@ order by
 Return the customer IDs of customers who have spent at least $110 with the staff member who has an ID of 2.
 
 ```sql
-select staff_id, customer_id, sum(amount)
-from payment
-where staff_id = 2
-group by staff_id, customer_id
-having sum(amount) > 110
+
 ```
 
 How many films begin with the letter J?
 
 ```sql
-select count(title)
-from film
-where title like 'J%'
+
 ```
 
 What customer has the highest customer ID number whose name starts with an 'E' and has an address ID lower than 500?
 
 ```sql
-select customer_id, first_name, last_name
-from customer
-where first_name like 'E%' and address_id < 500
-order by customer_id desc
-limit 1
+
 ```
 
 Wrong answer:
 
 ```sql
-select max(customer_id), first_name, last_name
-from customer
-where first_name ilike 'E%'
-	and address_id < 5000
--- group by
--- having
--- order by
--- limit
+
 ```
 
 
@@ -1290,10 +1227,7 @@ select c_1,...,c_n from t2
 -- task: what are the emails of the customers that live in California
 -- California is a district in the address table
 
-select customer.first_name, customer.last_name, customer.email, address.district
-from customer
-right join address on customer.address_id = address.address_id
-where address.district = 'California'
+
 
 -- this query returns the same information if we perform an inner join; we perform a right join to make sure that there is no person in California that does not have an email in the database
 ```
@@ -1313,13 +1247,7 @@ order by c.email asc
 -- task: get all Nick Wahlberg movies
 -- tables: film for the title, film_actor for relationship, actor for first and last name
 
-select actor.first_name, actor.last_name, film.title
-from actor
-join film_actor
- on actor.actor_id = film_actor.actor_id
-join film
- on film.film_id = film_actor.film_id
-where actor.first_name = 'Nick' and actor.last_name = 'Wahlberg'
+
 ```
 
 Alternative:
@@ -1456,9 +1384,7 @@ from payment
 -- task: during which month did payments occur?
 
 -- select extract(month from payment_date) <- this returns the months as a number
-select to_char(payment_date, 'Month')
-from payment
-group by to_char(payment_date, 'Month')
+
 ```
 
 Alternative:
@@ -1491,9 +1417,7 @@ order by date_part
 ```sql
 -- task: how many payments occured on a monday?
 
-select to_char(payment_date, 'day') as weekday, count(*)
-from payment
-group by weekday
+
 -- this returns the list of weekday and it's corresponding number of payments
 ```
 
@@ -1814,57 +1738,43 @@ Running Command:
 How can you retrieve all the information from the cd.facilities table?
 
 ```sql
-select *
-from cd.facility
+
 ```
 
 You want to print out a list of all of the facilities and their cost to members. How would you retrieve a list of only facility names and costs?
 
 ```sql
-select name, m_cost
-from cd.facility
+
 ```
 
 How can you produce a list of facilities that charge a fee to members?
 
 ```sql
-select name, m_cost
-from cd.facility
-where m_cost > 0
+
 ```
 
 How can you produce a list of facilities that charge a fee to members, and that fee is less than 1/50th of the monthly maintenance cost? Return the facid, facility name, member cost, and monthly maintenance of the facilities in question.
 
 ```sql
-select fac_id, name, m_cost, maintenance
-from cd.facility
-where
- m_cost > 0
- and m_cost < maintenance/50.0
+
 ```
 
 How can you produce a list of all facilities with the word 'Tennis' in their name?
 
 ```sql
-select *
-from cd.facility
-where name ilike '%tennis%'
+
 ```
 
 How can you retrieve the details of facilities with ID 1 and 5? Try to do it without using the OR operator.
 
 ```sql
-select *
-from cd.facility
-where fac_id in (1,5)
+
 ```
 
 How can you produce a list of members who joined after the start of September 2012? Return the memid, surname, firstname, and joindate of the members in question.
 
 ```sql
-select *
-from cd.member
-where join_date between '2012-09-01' and now()
+
 ```
 
 Alternative:
@@ -1878,119 +1788,56 @@ where join_date::date >= '2012-09-01'
 How can you produce an ordered list of the first 10 surnames in the members table? The list must not contain duplicates.
 
 ```sql
-select distinct(last_name)
-from cd.member
-where last_name != 'GUEST'
-order by last_name
-limit 10
+
 ```
 
 You'd like to get the signup date of your last member. How can you retrieve this information?
 
 ```sql
-select max(join_date)
-from cd.member
+
 -- return max
 ```
 
 Alternative 1:
 
 ```sql
-select first_name, last_name, join_date
-from cd.member
-order by join_date desc
-limit 1
+
 -- order and limit
 ```
 
-Alternative 2:
 
-```sql
-select first_name, last_name, join_date
-from cd.member
-where join_date in (
- select max(join_date)
- from cd.member
-)
--- where ... in clause; condition is single value
-```
-
-Alternative 3:
-
-```sql
-select first_name, last_name, join_date
-from cd.member as m_left
-join (
- select max(join_date) as max_join_date
- from cd.member
-) as m_right
-on m_left.join_date = m_right.max_join_date
--- inner join on single value
-```
 
 Produce a count of the number of facilities that have a cost to guests of 10 or more.
 
 ```sql
-select count(*)
-from cd.facility
-where g_cost >= 10
+
 ```
 
 Produce a list of the total number of slots booked per facility in the month of September 2012. Produce an output table consisting of facility id and slots, sorted by the number of slots.
 
 ```sql
-select fac_id, sum(slot) as booked_slots_sept
-from cd.booking
-where extract(month from start_time) = 9
--- where start_time::date >= '2012-09-01' and start_time::date <= '2012-10-01'
-group by fac_id
-order by sum(slot) asc
+
 ```
 
 Produce a list of facilities with more than 1000 slots booked. Produce an output table consisting of facility id and total slots, sorted by facility id.
 
 ```sql
-select fac_id, sum(slot)
-from cd.booking
-group by fac_id
-having sum(slot) > 1000
-order by fac_id
+
 ```
 
 How can you produce a list of the start times for bookings for tennis courts, for the date '2012-09-21'? Return a list of start time and facility name pairings, ordered by the time.
 
 ```sql
-select b.start_time, f.name
-from cd.booking as b
-join cd.facility as f on b.fac_id = f.fac_id
-where
- b.start_time::date = '2012-09-21'
- and f.name ilike '%tennis%court%'
-order by b.start_time
+
 -- keyword as is optional
 ```
 
-Alternative:
 
-```sql
-select start_time, f.name
-from cd.booking as b
-join cd.facility as f on b.fac_id = f.fac_id
-where
-  start_time between '2012-09-21' and '2012-09-22'
-  and f.name ilike '%tennis%court%'
-order by start_time
-```
 
 How can you produce a list of the start times for bookings by members named 'David Farrell'?
 
 ```sql
-select start_time
-from cd.booking as b
-join cd.member as m on b.mem_id = m.mem_id
-where
- m.first_name = 'David'
- and m.last_name = 'Farrell'
+
 ```
 
 # 10. Creating Databases and Tables
@@ -2391,81 +2238,34 @@ This will test your knowledge of the previous section, focused on creating datab
 Solution:
 
 ```sql
-create table student(
- student_id serial primary key,
- first_name varchar(50) not null,
- last_name varchar(50) not null,
- homeroom_nr varchar(50),
- phone varchar(50),
- email varchar(255),
- grad_year date
-)
+
 ```
 
 ```sql
-create table teacher(
- teacher_id serial primary key,
- first_name varchar(50) not null,
- last_name varchar(50) not null,
- homeroom_nr smallint,
- department varchar(255),
- email varchar(255),
- phone varchar(255)
-)
+
 ```
 
 ```sql
 -- change data type from date to smallint to store only the grad year
-alter table student
-alter column grad_year type smallint using (extract(year from grad_year)::smallint)
+
 ```
 
 ```sql
 -- change data type from varchar to smallint to store only a number
-alter table student
-alter column homeroom_nr type smallint using (homeroom_nr::smallint)
+
 ```
 
 ```sql
 -- add unique constraint to phone and email columns (contraint will be assign to one name!)
-alter table student
-add unique(phone, email)
+
 ```
 
 ```sql
-insert into student(
- first_name,
- last_name,
- phone,
- grad_year,
- homeroom_nr
-)
-values(
- 'Mark',
- 'Watney',
- '777-555-1234',
- 2035,
- 5
-)
+
 ```
 
 ```sql
-insert into teacher(
- first_name,
- last_name,
- homeroom_nr,
- department,
- email,
- phone
-)
-values(
- 'Jonas',
- 'Salk',
- 5,
- 'Biology',
- 'jsalk@school.org',
- '777-555-4321'
-)
+
 ```
 
 # 12. Conditional Expressions and Procedures
@@ -2626,33 +2426,7 @@ group by
 **Challenge**: We want to know and compare the various amounts of films we have per movie rating. Use `case` and the dvdrental database:
 
 ```sql
-select
- sum(
-  case rating
-  when 'NC-17' then 1
-  else 0
-  end) as nc17,
- sum(
-  case rating
-  when 'G' then 1
-  else 0
-  end ) as g,
- sum(
-  case rating
-  when 'PG' then 1
-  else 0
-  end) as pg,
- sum(
-  case rating
-  when 'PG-13' then 1
-  else 0
-  end) as pg13,
- sum(
-  case rating
-  when 'R' then 1
-  else 0
-  end ) as r
-from film
+
 ```
 
 Better option: 
